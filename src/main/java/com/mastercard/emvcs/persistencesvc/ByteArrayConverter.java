@@ -9,13 +9,11 @@ public class ByteArrayConverter implements AttributeConverter<String, byte[]> {
 
     @Override
     public byte[] convertToDatabaseColumn(String string) {
-        //return new ByteArray(PConfiguration.hexStringToByteArray(rid));
         return PConfiguration.hexStringToByteArray(string);
     }
 
     @Override
     public String convertToEntityAttribute(byte[] byteArray) {
-        //return (new String(byteArray.getByteArray(), StandardCharsets.UTF_8));
         return (new String(byteArray, StandardCharsets.UTF_8));
     }
 
