@@ -38,6 +38,7 @@ public class PController {
         try {
             UnallocatedSn _unallocatedSn = serialNumberRepository
                     .save(new UnallocatedSn(
+                            unallocatedSn.getId(),
                             unallocatedSn.getRid(),
                             unallocatedSn.getCaPKIdx(),
                             unallocatedSn.getRangeStart(),
@@ -51,6 +52,29 @@ public class PController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PutMapping("/unallocated-sn/{rid}/{caPKIdx}")
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE,
+            method = RequestMethod.PUT,
+            value = "/unallocated-sn/{rid}/{caPKIdx}")
+    public ResponseEntity<UnallocatedSn> updateUnallocatedSn(@RequestBody UnallocatedSn updateUnallocatedSn,
+                                             @PathVariable String rid,
+                                             @PathVariable String caPKIdx) {
+        UnallocatedSn unallocatedSn;
+        try {
+
+            unallocatedSn = serialNumberRepository.findByRidAndCaPKIdx(rid, caPKIdx);
+            unallocatedSn.setRangeStart(updateUnallocatedSn.getRangeStart());
+            unallocatedSn.setRangeEnd(updateUnallocatedSn.getRangeEnd());
+            unallocatedSn.setAllocSize(updateUnallocatedSn.getAllocSize());
+            unallocatedSn.setReallocLevel(updateUnallocatedSn.getReallocLevel());
+            return new ResponseEntity<>(serialNumberRepository.save(unallocatedSn), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @GetMapping("/unallocated-sn")
     public String listAll(UnallocatedSn UnallocatedSn) {

@@ -3,28 +3,23 @@ package com.mastercard.emvcs.persistencesvc;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.mastercard.emvcs.persistencesvc.PConfiguration.hexStringToByteArray;
-
 @Entity
-@Table(name="unallocated_sn")
+//@IdClass(UnallocatedSnPKey.class)
+@Table(name = "unallocated_sn")
 public class UnallocatedSn {
     @Id
-    @Column(name = "id")
+    @Type(type="pg-uuid")
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column
-    @Convert(converter = RidConverter.class)
-    private RID rid;
+    @Column(name = "rid")
+    private String rid;
 
-//    @Column(name = "ca_pkidx")
-//    @Lob
-//    @Type(type = "org.hibernate.type.BinaryType")
+    @Column(name = "ca_pkidx")
     private String caPKIdx;
 
     @Column(name = "range_start")
@@ -45,10 +40,8 @@ public class UnallocatedSn {
     @Column(name = "modified_timestamp")
     private Date modifiedTimestamp;
 
-    public UnallocatedSn(RID rid, String caPKIdx, long rangeStart, long rangeEnd, long allocSize, long reallocLevel, Date createdTimestamp, Date modifiedTimestamp) {
-    }
 
-    public UnallocatedSn(UUID id, RID rid, String caPKIdx, long rangeStart, long rangeEnd, long allocSize, long reallocLevel, Date createdTimestamp, Date modifiedTimestamp) {
+    public UnallocatedSn(UUID id, String rid, String caPKIdx, long rangeStart, long rangeEnd, long allocSize, long reallocLevel, Date createdTimestamp, Date modifiedTimestamp) {
         this.id = id;
         this.rid = rid;
         this.caPKIdx = caPKIdx;
@@ -71,11 +64,11 @@ public class UnallocatedSn {
         this.id = id;
     }
 
-    public RID getRid() {
+    public String getRid() {
         return rid;
     }
 
-    public void setRid(RID rid) {
+    public void setRid(String rid) {
         this.rid = rid;
     }
 
@@ -151,17 +144,16 @@ public class UnallocatedSn {
         if (this == o) return true;
         if (!(o instanceof UnallocatedSn)) return false;
         UnallocatedSn that = (UnallocatedSn) o;
-        return getId().equals(that.getId()) && rid.equals(that.rid) && getCaPKIdx().equals(that.getCaPKIdx());
+        return getId().equals(that.getId()) && getRid().equals(that.getRid()) && getCaPKIdx().equals(that.getCaPKIdx());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), rid, getCaPKIdx());
+        return Objects.hash(getId(), getRid(), getCaPKIdx());
     }
 
     @Override
     public String toString() {
-        String r = new String(rid.getRidAsBytes(), StandardCharsets.UTF_8);
         return "UnallocatedSn{" +
                 "id=" + id +
                 ", rid='" + rid + '\'' +

@@ -10,13 +10,12 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE SCHEMA cadata
     AUTHORIZATION postgres;
 
-
 CREATE TABLE cadata.outbox
 (
     id uuid NOT NULL,
-    topic_name character varying(256),
-    database character varying(256),
-    schema character varying(256),
+    topic_name varchar,
+    database varchar,
+    schema varchar,
     created_timestamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     content json,
     CONSTRAINT outbox_pkey PRIMARY KEY (id)
@@ -25,9 +24,9 @@ CREATE TABLE cadata.outbox
 CREATE TABLE cadata.repadm
 (
     id uuid NOT NULL,
-    location character varying(32),
-    topic_type character varying(32),
-    topic_name character varying(256),
+    location varchar,
+    topic_type varchar,
+    topic_name varchar,
     topic_conn_info json,
     created_timestamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     modified_timestamp timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -37,8 +36,8 @@ CREATE TABLE cadata.repadm
 CREATE TABLE cadata.unallocated_sn
 (
     id uuid NOT NULL,
-    rid bytea,
-    ca_pkidx bytea,
+    rid varchar,
+    ca_pkidx varchar,
     range_start int,
     range_end int,
     alloc_size int,
@@ -51,9 +50,9 @@ CREATE TABLE cadata.unallocated_sn
 CREATE TABLE cadata.assigned_sn
 (
     id uuid NOT NULL,
-    location character varying(32),
-    rid bytea,
-    ca_pkidx bytea,
+    location varchar,
+    rid varchar,
+    ca_pkidx varchar,
     range_start int,
     range_end int,
     last_sn int,
@@ -62,6 +61,6 @@ CREATE TABLE cadata.assigned_sn
     CONSTRAINT assigned_sn_pkey PRIMARY KEY (id)
 );
 
-INSERT INTO cadata.unallocated_sn
-( id, rid, ca_pkidx, range_start, range_end, alloc_size, realloc_level)
-VALUES ( uuid_generate_v4(), 'A000000005', '05', 1,  16777216, 10000, 100);
+-- INSERT INTO cadata.unallocated_sn
+-- ( id, rid, ca_pkidx, range_start, range_end, alloc_size, realloc_level)
+-- VALUES ( uuid_generate_v4(), 'A000000005', '05', 1,  16777216, 10000, 100);
